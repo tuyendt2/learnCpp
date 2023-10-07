@@ -3,7 +3,7 @@ Created by :	 CAN
 File name :		 student.h
 
 ---------------------------------*/
-
+#include <cstdint>
 #include <iostream>
 using namespace std;
 // -------------sv data type define--------------
@@ -36,7 +36,9 @@ bool check_find_by_ages(void *data_1, void *data_2)
 {
 	cout << "check_find_by_ages " << endl;
 	sv *std = (sv *)data_2;
-	long long ages = (long long)data_1;
+	// long long ages = (long long)data_1;
+	intptr_t val =  reinterpret_cast<intptr_t> (data_1);
+	int ages = static_cast<int> (val);
 	cout << "std->ages" << std->ages << endl;
 	cout << "ages" << ages << endl;
 	if (std->ages == ages)
@@ -52,7 +54,9 @@ bool check_find_by_ages(void *data_1, void *data_2)
 //------------print_student_by_ages function define--------------------------------
 void print_student_by_ages(int index, void *data_1, void *data_2)
 {
-	long long ages = (long long)data_1;
+	// long long ages = (long long)data_1;
+	intptr_t val =  reinterpret_cast<intptr_t> (data_1);
+	int ages = static_cast<int> (val);
 	sv *student = (sv *)data_2;
 	if (student->ages == ages)
 	{
@@ -71,13 +75,13 @@ void sv_info(void *data)
 
 bool remove_check_by_index(void *data_1, void *data_2)
 {
-	long long index = (long long) data_1;
-	long long itemIdex = (long long)data_2;
-	if (index == itemIdex)
-	{
-		return true;
-	}
-	return false;
+	// long long index = (long long) data_1;
+	// long long itemIdex = (long long)data_2;
+	intptr_t val =  reinterpret_cast<intptr_t> (data_1);
+	int index = static_cast<int> (val);
+	intptr_t val2 =  reinterpret_cast<intptr_t> (data_2);
+	int itemIdex = static_cast<int> (val2);
+	return index == itemIdex;
 }
 //------------------release sv function -----------a instance of release_data_function-------------
 void release_sv(void *data)
@@ -89,7 +93,9 @@ void release_sv(void *data)
 // --------------------insert-check-function-------------------------------------
 bool insert_by_ages_check(void *data_1, void *data_2)
 {
-	long long ages = (long long)data_1;
+	// long long ages = (long long)data_1;
+	intptr_t val =  reinterpret_cast<intptr_t> (data_1);
+	int ages = static_cast<int> (val);
 	sv *sinhvien = (sv *)data_2;
 	int itemAges = sinhvien->ages;
 	if (ages == itemAges)
