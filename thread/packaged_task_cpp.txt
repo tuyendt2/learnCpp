@@ -1,0 +1,77 @@
+// std::promise and std::future
+
+
+// old function need to be modified , add promise parameter
+
+// for example, if I have a initiazer function 
+
+int initiazer()
+{
+    std::cout<<"Inside Thread"<<std::endl;     
+	return 35;
+}
+
+// to call it in async by another thread, we need to add std::promise parameter
+
+int initiazer(std::promise<int> * promObj)
+{
+    std::cout<<"Inside Thread"<<std::endl;     
+    promObj->set_value(35);
+	return 35;
+}
+
+// we also need to call std::future<int> futureObj = promiseObj.get_future(); before passing promiseObj to the async function `initiazer`
+
+// then call futureObj.get() to get the value return from initiazer
+
+
+#include <iostream>
+#include <thread>
+#include <future>
+int initiazer(std::promise<int> * promObj)
+{
+    std::cout<<"Inside Thread"<<std::endl;     
+    promObj->set_value(35);
+	return int;
+}
+int main()
+{
+    std::promise<int> promiseObj;
+    std::future<int> futureObj = promiseObj.get_future();
+    std::thread th(initiazer, &promiseObj);
+    std::cout<<futureObj.get()<<std::endl;
+    th.join();
+    return 0;
+}
+
+
+
+// with std::packaged_task, no need to modify the original async function
+// instead of call std::thread th(initiazer, &promiseObj);, we need to call std::thread th(std::move(task)); with task is a std::packaged_task<int ()>
+
+#include <iostream>
+#include <thread>
+#include <future>
+#include <string>
+// Fetch some data from DB
+int initiazer()
+{
+    std::cout<<"Inside Thread"<<std::endl;     
+	return 35;
+}
+
+int main()
+{
+    // Create a packaged_task<> that encapsulated the callback i.e. a function
+    std::packaged_task<int ()> task(getDataFromDB);
+    // Fetch the associated future<> from packaged_task<>
+    std::future<int> result = task.get_future();
+    // Pass the packaged_task to thread to run asynchronously
+    std::thread th(std::move(task));
+    // Join the thread. Its blocking and returns when thread is finished.
+    th.join();
+    // Fetch the result of packaged_task<> i.e. value returned by getDataFromDB()
+    int data =  result.get();
+    std::cout <<  data << std::endl;
+    return 0;
+}
